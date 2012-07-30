@@ -11,10 +11,11 @@
 #   None
 #
 # URLS:
-#   /hubot/version
-#   /hubot/ping
-#   /hubot/time
-#   /hubot/info
+#   /version
+#   /ping
+#   /time
+#   /info
+#   /
 
 spawn = require('child_process').spawn
 
@@ -33,7 +34,7 @@ module.exports = (robot) ->
     res.end "Server time is: #{new Date()}"
 
   robot.router.get "/", (req, res) ->
-    res.redirect "/info"
+    res.writeHead 302, { 'Location': '/info' }
 
   robot.router.get "/info", (req, res) ->
     child = spawn('/bin/sh', ['-c', "echo I\\'m $LOGNAME@$(hostname):$(pwd) \\($(git rev-parse HEAD)\\)"])
