@@ -20,16 +20,19 @@ spawn = require('child_process').spawn
 
 module.exports = (robot) ->
 
-  robot.router.get "/hubot/version", (req, res) ->
+  robot.router.get "/version", (req, res) ->
     res.end robot.version
 
   robot.router.post "/hubot/ping", (req, res) ->
     res.end "PONG"
 
-  robot.router.get "/hubot/time", (req, res) ->
+  robot.router.get "/ping", (req, res) ->
+    res.end "PONG"
+
+  robot.router.get "/time", (req, res) ->
     res.end "Server time is: #{new Date()}"
 
-  robot.router.get "/hubot/info", (req, res) ->
+  robot.router.get "/info", (req, res) ->
     child = spawn('/bin/sh', ['-c', "echo I\\'m $LOGNAME@$(hostname):$(pwd) \\($(git rev-parse HEAD)\\)"])
 
     child.stdout.on 'data', (data) ->
