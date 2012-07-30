@@ -2,7 +2,7 @@
 #   Interacts with the Google Maps API.
 #
 # Commands:
-#   hubot map me <query> - Returns a map view of the area returned by `query`.
+#   :map me <query> - Returns a map view of the area returned by `query`.
 
 module.exports = (robot) ->
 

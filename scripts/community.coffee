@@ -1,21 +1,19 @@
 # Description:
 #   Make hubot fetch quotes pertaining Community
 #
+# Commands:
+#   :quote - Displays a random quote from Community!.
+#
 # Dependencies:
 #   "htmlparser": "1.7.6"
-#   "soupselect: "0.2.0"
+#   "soupselect": "0.2.0"
 #   "jsdom": "0.2.14"
 #   "underscore": "1.3.3"
 #
 # Configuration:
 #   None
 #
-# Commands:
-# 
 # Author:
-#   rrix
-#
-# Modified by:
 #   jhoff
 
 Select     = require("soupselect").select
