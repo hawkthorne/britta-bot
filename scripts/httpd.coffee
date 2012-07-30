@@ -35,6 +35,7 @@ module.exports = (robot) ->
 
   robot.router.get "/", (req, res) ->
     res.writeHead 302, { 'Location': '/info' }
+    res.end()
 
   robot.router.get "/info", (req, res) ->
     child = spawn('/bin/sh', ['-c', "echo I\\'m $LOGNAME@$(hostname):$(pwd) \\($(git rev-parse HEAD)\\)"])
