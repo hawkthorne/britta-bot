@@ -1,1 +1,1 @@
-app: bin/hubot -a irc -n britta-bot --alias '/'
+app: bin/hubot -a irc -n britta-bot --alias ':'
