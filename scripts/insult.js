@@ -17,7 +17,7 @@ module.exports = function(robot) {
 	robot.respond( /insult (.*)/i, function(msg) {
 		name = msg.match[ 1 ].trim();
 		msg.send( insult( name ) );
-	}
+	});
 }
 
 var insult = function(name) {
