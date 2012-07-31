@@ -15,13 +15,13 @@
 
 module.exports = function(robot) {
 	robot.respond( /insult (.*)/i, function(msg) {
-		name = msg.match[ 1 ].trim();
+		var name = msg.match[ 1 ].trim();
 		msg.send( insult( name ) );
 	});
 }
 
 var insult = function(name) {
-	insults[ ( Math.random() * insults.length ) >> 0 ].replace( /{name}/ , name );
+	return insults[ ( Math.random() * insults.length ) >> 0 ].replace( /{name}/ , name );
 }
 
 var insults = [
