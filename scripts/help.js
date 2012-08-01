@@ -75,7 +75,7 @@ module.exports = function(robot) {
 	});
 
 	robot.router.get( '/help', function(req, res) {
-		var cmds = robot.helpCommands();
+		var cmds = robot.helpCommands().slice(0);
 		for( var i in cmds ) {
 			cmds[i] = escapeHtml( cmds[i] );
 		}
