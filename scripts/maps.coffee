@@ -2,7 +2,7 @@
 #   Interacts with the Google Maps API.
 #
 # Commands:
-##   :map me <query> - Returns a map view of the area returned by `query`.
+#   None
 
 module.exports = (robot) ->
 

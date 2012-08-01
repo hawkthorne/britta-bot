@@ -2,9 +2,7 @@
 #   Utility commands surrounding Hubot uptime.
 #
 # Commands:
-##   :ping - Reply with pong
-##   :echo <text> - Reply back with <text>
-##   :time - Reply with current time
+#   None
 
 module.exports = (robot) ->
   robot.respond /PING$/i, (msg) ->
