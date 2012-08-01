@@ -50,12 +50,12 @@ var helpContents = function( name, commands ) {
 };
 
 module.exports = function(robot) {
-	robot.respond( /help\s*(.*)?$/i, function(msg) {
+	robot.respond( /help\s*(.*)?$/i, function(res) {
 		var cmds = robot.helpCommands();
 
-		if( msg.match[1] ) {
+		if( res.match[1] ) {
 			cmds = cmds.filter(function( cmd ) {
-				cmd.match( new RegExp( msg.match[1] , 'i') );
+				return cmd.match( new RegExp( res.match[1] , 'i') );
 			});
 		}
 
@@ -65,7 +65,13 @@ module.exports = function(robot) {
 			emit = emit.replace( /hubot/ig, robot.name );
 		}
 
-		 msg.send( emit );
+		if( res.match[1] ) { // send it to the room
+			res.send( emit );
+		} else { // send a private message to avoid annoying the shit out of everyone
+			res.send( res.message.user.name + ': Check your PM' );
+			robot.send( res.message.user.name, emit );
+		}
+
 	});
 
 	robot.router.get( '/help', function(req, res) {
