@@ -15,7 +15,7 @@
   },
 
   "dependencies": {
-    "hubot": "2.x.x",
+    "hubot": "git://github.com/github/hubot.git",
     "hubot-scripts": "2.x.x",
     "optparse": "1.0.x",
     "hubot-irc": "0.x.x",

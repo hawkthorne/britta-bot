@@ -1,17 +1,17 @@
-// Description:
-//   None
+//Description:
+//  None
 //
-// Dependencies:
-//   None
+//Dependencies:
+//  None
 //
-// Configuration:
-//   None
+//Configuration:
+//  None
 //
-// Commands:
-//   :insult <name> - give <name> the what-for
+//Commands:
+//  :insult <name> - give <name> the what-for
 //
-// Author:
-//   ajacksified / jhoff
+//Author:
+//  ajacksified / jhoff
 
 module.exports = function(robot) {
 	robot.respond( /insult (.*)/i, function(msg) {

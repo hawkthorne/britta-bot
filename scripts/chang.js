@@ -1,17 +1,17 @@
-// Description:
-//   None
+//Description:
+//  None
 //
-// Dependencies:
-//   None
+//Dependencies:
+//  None
 //
-// Configuration:
-//   None
+//Configuration:
+//  None
 //
-// Commands:
-//   :chang me - Let the changlarity ensue...
+//Commands:
+//  :chang me - Let the changlarity ensue...
 //
-// Author:
-//   ajacksified / jhoff
+//Author:
+//  ajacksified / jhoff
 
 module.exports = function(robot) {
 	robot.respond( /chang me/i, function(msg) {
