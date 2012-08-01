@@ -14,7 +14,7 @@
 //  ajacksified / jhoff
 
 module.exports = function(robot) {
-	robot.respond( /chang me/i, function(msg) {
+	robot.respond( /chang/i, function(msg) {
 		msg.send( changs[ ( Math.random() * changs.length ) >> 0 ] );
 	});
 }
