@@ -3,7 +3,8 @@
 //
 //Commands:
 //  :updates - hubot will send you a pm of the most recent release notes
-//  :latest release - hubot will print out the most recent release version
+//  :latest - hubot will print out the most recent release version
+//  :release - hubot will print out the most recent release version
 //
 //Dependencies:
 //  None
@@ -25,7 +26,7 @@ module.exports = function(robot) {
 			});
 	});
 
-	robot.respond( /latest release/i, function(msg) {
+	robot.respond( /(latest|release)/i, function(msg) {
 		msg
 			.http("https://api.github.com/repos/kyleconroy/hawkthorne-journey/git/refs/tags")
 			.get()(function( err, res, body ) {
