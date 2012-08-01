@@ -75,12 +75,24 @@ module.exports = function(robot) {
 	});
 
 	robot.router.get( '/help', function(req, res) {
-		var cmds = robot.helpCommands(),
-			emit = "<p>" + cmds.join( "</p><p>" ) + "</p>";
+		var cmds = robot.helpCommands();
+		for( var i in cmds ) {
+			cmds[i] = escapeHtml( cmds[i] );
+		}
+		var emit = "<p>" + cmds.join( "</p><p>" ) + "</p>";
 
 		emit = emit.replace( /hubot/ig, "<b>" + robot.name + "</b>" );
 
 		res.setHeader( 'content-type', 'text/html' );
 		res.end( helpContents( robot.name, emit ) );
 	});
+
+	function escapeHtml(unsafe) {
+		return unsafe
+			.replace(/&/g, "&amp;")
+			.replace(/</g, "&lt;")
+			.replace(/>/g, "&gt;")
+			.replace(/"/g, "&quot;")
+			.replace(/'/g, "&#039;");
+	}
 };
