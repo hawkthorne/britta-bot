@@ -21,7 +21,7 @@ module.exports = function(robot) {
 		var page = msg.random( [0,4,8,12] );
 		msg
 			.http('http://ajax.googleapis.com/ajax/services/search/images')
-			.query( { v: '1.0', as_filetype: 'gif',start: page,rsz: '8', q: 'kim jenon senor chang community', safe: 'active' } )
+			.query( { v: '1.0', as_filetype: 'gif',start: page,rsz: '8', q: 'senor chang community', safe: 'active' } )
 			.get()(function(err, res, body) {
 				var images = (JSON.parse( body )).responseData.results;
 				images.sort(function() {return 0.5 - Math.random()});
