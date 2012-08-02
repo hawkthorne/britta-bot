@@ -23,6 +23,7 @@ All commands to britta-bot can be prefixed with ':'
 	:help - Displays all of the help commands that britta-bot knows about.
 	:help <query> - Displays all help commands that match <query>.
 	:image me <query> - The Original. Queries Google Images for <query> and returns a random top result.
+	:insult bomb <name> - put <name> in a body bag
 	:insult <name> - give <name> the what-for
 	:jeff bomb N - N jeffs, all equally handsome ( limit 8 )
 	:jeff me - Receive a jeff

@@ -9,6 +9,7 @@
 //
 //Commands:
 //  :insult <name> - give <name> the what-for
+//  :insult bomb <name> - put <name> in a body bag
 //
 //Author:
 //  ajacksified / jhoff
@@ -17,13 +18,38 @@ module.exports = function(robot) {
 	robot.respond( /insult (.*)/i, function(msg) {
 		var name = msg.match[ 1 ].trim(),
 			namelc = name.toLowerCase();
-		if( namelc == "yourself" || namelc == "you" || namelc == robot.name || namelc == 'me' ) name = msg.message.user.name;
-		msg.send( insult( name ) );
+		if( !namelc.match( /^bomb.*/i ) ) {
+			if( [ 'yourself', 'you', robot.name, 'me' ].indexOf( namelc ) >= 0 ) name = msg.message.user.name;
+			insult( msg, name, 1 );
+		}
+	});
+
+	robot.respond( /insult bomb (.*)/i, function(msg) {
+		var name = msg.match[ 1 ].trim(),
+			namelc = name.toLowerCase();
+		if( [ 'yourself', 'you', robot.name, 'me' ].indexOf( namelc ) >= 0 ) name = msg.message.user.name;
+		insult( msg, name, 10 );
 	});
 }
 
-var insult = function(name) {
-	return insults[ ( Math.random() * insults.length ) >> 0 ].replace( /{name}/ , name );
+var insult = function( msg, name, count ) {
+	var rand_insults = shuffle( insults );
+	for( var i = 0; i < count; i++ ) {
+		msg.send( rand_insults.pop().replace( /{name}/ , name ) );
+	}
+}
+
+function shuffle(array) {
+	var tmp, current, top = array.length;
+
+	if(top) while(--top) {
+		current = Math.floor(Math.random() * (top + 1));
+		tmp = array[current];
+		array[current] = array[top];
+		array[top] = tmp;
+	}
+
+	return array;
 }
 
 var insults = [
@@ -39,7 +65,7 @@ var insults = [
 	"{name}, YOU'RE THE WORST!",
 	"{name}, Tell your disappointment to suck it.",
 	"{name}, You're more like Michael Douglas in any of his movies.",
-	"{name}, Oh yeah, well you have Aspergers.",
+	"Oh yeah {name}? Well you have Aspergers.",
 	"SCHMITTAY!!!",
 	"Duh Doi!!!",
 	"{name}, You britta'd it.",
@@ -67,5 +93,31 @@ var insults = [
 	"Hey {name}, Enjoy eating fiber and watching The Mentalist.",
 	"{name}, You are human tennis elbow!",
 	"{name}, going home alone? GAY!",
-	"{name}, If you have to ask, you're streets behind."
+	"{name}, If you have to ask, you're streets behind.",
+	"{name}, Stifle your slackened maw you drained and tainted bitch dog.",
+	"{name}, You're just an average-looking guy with a big chin.",
+	"{name}, You're streets behind.",
+	"{name}, Your team's Al Gore because your views are wrong.",
+	"{name}, You're like the exact opposite of an anti-oxidant.",
+	"{name}, Your feet are long and stupid.",
+	"{name}, Life sued you and you lost.",
+	"{name}, You're a bad rowboat, someone should sink you.",
+	"{name}, You are a puff of hot air from the lips of a ghost in the shadow of a unicorn's dream.",
+	"{name}, Your love is weird, and toxic, and it destroys everything it touches!",
+	"{name}, Shouldn't you be making weird art movies or well-engineered cars?",
+	"{name}, If you get any nuttier, they're going to put you on The View.",
+	"{name}, You're crazytown banana pants.",
+	"{name}, Your name might as well be Gravy Jones.",
+	"{name}, Your demographic's historical vanity is well-documented!",
+	"{name}, You look like a pizza guy who couldn't make it into porn.",
+	"{name}, You're a monster, you're Hitler, you're a racist pedophile!",
+	"{name}, If you had let being bad at something stop you, you wouldn't be here.",
+	"{name}, It must be hard to find someone willing to stomach your imminent dementia and present incontinence.",
+	"{name}, I've always thought you were a joke and this isn't disproving the theory.",
+	"{name}, If a mechanical spider was tearing you to pieces, Tom Selleck would just stand there and watch you die.",
+	"{name}, You're no more of a song writer than Billy Joel.",
+	"{name}, Go tongue Chang.",
+	"{name}, I thought you were like Bill Murray in any of his films, but you're more like Michael Douglas in any of his films.",
+	"{name}, I hope you transfer to hell.",
+	"{name}, You're an embarrassment to the department."
 ];
