@@ -8,29 +8,37 @@ All commands to britta-bot can be prefixed with ':'
 
 	:<user> is a badass guitarist - assign a role to a user
 	:<user> is not a badass guitarist - remove a role from a user
+	:abed bomb N - get N abeds all in a row ( limit 8 )
+	:abed me - Receive an abed
 	:animate me <query> - The same thing as `image me`, except adds a few parameters to try to return an animated GIF instead.
-	:chang me - Let the changlarity ensue...
+	:annie bomb N - N annies, all equally pretentious ( limit 8 )
+	:annie me - Receive an annie
+	:britta bomb N - get britta'd N times ( limit 8 )
+	:britta me - Receive a britta
+	:chang bomb N - get changd N times in the chang ( limit 8 )
+	:chang me - Receive a chang
 	:convert me <expression> to <units> - Convert expression to given units.
-	:echo <text> - Reply back with <text>
-	:help - Displays all of the help commands that britta-bot-dev knows about.
+	:dean bomb N - receive N deans to the face ( limit 8 )
+	:dean me - Receive a dean
+	:help - Displays all of the help commands that britta-bot knows about.
 	:help <query> - Displays all help commands that match <query>.
 	:image me <query> - The Original. Queries Google Images for <query> and returns a random top result.
 	:insult <name> - give <name> the what-for
-	:latest release - britta-bot-dev will print out the most recent release version
-	:map me <query> - Returns a map view of the area returned by `query`.
+	:jeff bomb N - N jeffs, all equally handsome ( limit 8 )
+	:jeff me - Receive a jeff
+	:latest - britta-bot will print out the most recent release version
 	:math me <expression> - Calculate the given expression.
 	:mustache me <query> - Searches Google Images for the specified query and mustaches it.
 	:mustache me <url> - Adds a mustache to the specified URL.
-	:ping - Reply with pong
-	:pug bomb N - get N pugs
-	:pug me - Receive a pug
+	:pierce bomb N - get a pocketfull of N pierces ( limit 8 )
+	:pierce me - Receive a pierce
 	:quote - Displays a random quote from Community!.
-	:show storage - Display the contents that are persisted in the brain
-	:show users - Display all users that britta-bot-dev knows about
-	:the rules - Make sure britta-bot-dev still knows the rules.
-	:time - Reply with current time
-	:translate me <phrase> - Searches for a translation for the <phrase> and then prints that bad boy out.
-	:translate me from <source> into <target> <phrase> - Translates <phrase> from <source> into <target>. Both <source> and <target> are optional
-	:updates - britta-bot-dev will send you a pm of the most recent release notes
+	:release - britta-bot will print out the most recent release version
+	:shirley bomb N - N times the shirley fun! ( limit 8 )
+	:shirley me - Receive a shirley
+	:the rules - Make sure britta-bot still knows the rules.
+	:troy bomb N - troy xN ( limit 8 )
+	:troy me - Receive a troy
+	:updates - britta-bot will send you a pm of the most recent release notes
 	:who is <user> - see what roles a user has
 	:youtube me <query> - Searches YouTube for the query and returns the video embed link.
