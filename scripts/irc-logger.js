@@ -41,10 +41,11 @@ module.exports = function(robot) {
 	});
 
 	function write_message( type, msg ) {
-		_msg = msg.message;
-		_room = _msg.user.room;
-		delete _msg.user.room; // we don't need to store these in the log
-		delete _msg.done;
+		_room = msg.message.user.room;
+		_msg = { user: msg.message.user.name };
+		if( type == 'text' ) {
+			_msg.text = msg.message.text;
+		}
 		write_log( _room, type, _msg );
 	}
 
