@@ -13,15 +13,9 @@
 //Author:
 //  jhoff
 
-var Url = require( 'url' ),
-	Redis = require( 'redis' );
-
 module.exports = function(robot) {
 
-	var info = Url.parse( process.env.REDISTOGO_URL || 'redis://localhost:6379' ),
-		client = Redis.createClient(info.port, info.hostname);
-
-	robot.redisClient = client;
+	var client = robot.redisclient;
 
 	// listen for all events that the irc bot emits
 	robot.adapter.bot

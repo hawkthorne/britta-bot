@@ -69,7 +69,7 @@ var log_tmpl = hogan.compile( _start + _logs + _end ),
 module.exports = function(robot) {
 
 	robot.router.get( "/logs", function( req, res ) {
-		robot.redisClient.keys( 'logs_*', function(err, chans) {
+		robot.redisclient.keys( 'logs_*', function(err, chans) {
 			chans = chans.map( function(a) { a = a.replace('logs_',''); return { name: a, href: '/logs/' + a.replace( /#/g, '$' ) }; } );
 			res.end( channel_tmpl.render( { title: robot.name + ' irc ', channels: chans } ) );
 		});
@@ -80,7 +80,7 @@ module.exports = function(robot) {
 			page = req.params.page || 1,
 			per_page = 100;
 		page = page > 1 ? page : 1;
-		robot.redisClient.lrange( 'logs_' + channel, ( ( page - 1 ) * per_page ) , ( page * per_page ), function(err, logs) {
+		robot.redisclient.lrange( 'logs_' + channel, ( ( page - 1 ) * per_page ) , ( page * per_page ), function(err, logs) {
 			var log_out = [];
 			for( var i = logs.length - 1; i >= 0; i-- ) {
 				var _new = JSON.parse( logs[i] );
