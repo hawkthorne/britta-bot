@@ -13,7 +13,15 @@
 //Author:
 //  jhoff
 
+var Url = require( 'url' ),
+	Redis = require( 'redis' );
+
 module.exports = function(robot) {
+
+	var info = Url.parse( process.env.REDISTOGO_URL || 'redis://localhost:6379' ),
+		client = Redis.createClient(info.port, info.hostname);
+
+	robot.redisClient = client;
 
 	// listen for all events that the irc bot emits
 	robot.adapter.bot
@@ -127,12 +135,12 @@ module.exports = function(robot) {
 	function write_log( room, type, data ) {
 		room = room.trim();
 		console.log(type + ': pushing', data, 'to logs_' + room);
-		robot.redisclient.lpush( 'logs_' + room, JSON.stringify( {
+		client.lpush( 'logs_' + room, JSON.stringify( {
 			type: type,
 			stamp: Math.floor((new Date()).getTime() / 1000),
 			data: data
 		} ) );
-		robot.redisclient.ltrim( 'logs_' + room, 0, 1000 );
+		client.ltrim( 'logs_' + room, 0, 1000 );
 	}
 //	process.hubot = robot;
 }
