@@ -77,6 +77,13 @@ var _start = '\n\
 			left: 0;\n\
 			padding: 18px 70px;\n\
 		}\n\
+		.images {\n\
+			margin-left: 105px;\n\
+		}\n\
+		.images img {\n\
+			height: 150px;\n\
+			padding: 10px;\n\
+		}\n\
 	</style>\n\
 	<script type="text/javascript">\n\
 		function load() { window.scrollTo(0, document.body.scrollHeight); };\n\
@@ -101,22 +108,22 @@ var _logs = '\n\
 		<li class="{{type}}">\n\
 		<span class="stamp">{{stamp}}</span>\n\
 		{{#is_kick}}\n\
-			<span class="user">{{data.user}}</span> was kicked by <span class="user">{{data.by}}</span>{{#data.reason}} ( {{data.reason}} ){{/data.reason}}<br>\n\
+			<span class="user">{{data.user}}</span> was kicked by <span class="user">{{data.by}}</span>{{#data.reason}} ( {{data.reason}} ){{/data.reason}}\n\
 		{{/is_kick}}\n\
 		{{#is_nick}}\n\
-			<span class="user">{{data.from}}</span> changed name to <span class="user">{{data.to}}</span><br>\n\
+			<span class="user">{{data.from}}</span> changed name to <span class="user">{{data.to}}</span>\n\
 		{{/is_nick}}\n\
 		{{#is_join}}\n\
-			<span class="user">{{data.user}}</span> joined<br>\n\
+			<span class="user">{{data.user}}</span> joined\n\
 		{{/is_join}}\n\
 		{{#is_part}}\n\
-			<span class="user">{{data.user}}</span> left{{#data.reason}} ( {{data.reason}} ){{/data.reason}}<br>\n\
+			<span class="user">{{data.user}}</span> left{{#data.reason}} ( {{data.reason}} ){{/data.reason}}\n\
 		{{/is_part}}\n\
 		{{#is_quit}}\n\
-			<span class="user">{{data.user}}</span> quit{{#data.reason}} ( {{data.reason}} ){{/data.reason}}<br>\n\
+			<span class="user">{{data.user}}</span> quit{{#data.reason}} ( {{data.reason}} ){{/data.reason}}\n\
 		{{/is_quit}}\n\
 		{{#is_message}}\n\
-			<span class="user">{{data.user}}</span>: {{data.message}}<br>\n\
+			<span class="user">{{data.user}}</span>: {{{data.message}}}\n\
 		{{/is_message}}\n\
 		</li>\n\
 	{{/logs}}\n\
@@ -147,7 +154,9 @@ module.exports = function(robot) {
 			var log_out = [];
 			for( var i = logs.length - 1; i >= 0; i-- ) {
 				var _new = JSON.parse( logs[i] );
-				_new['stamp'] = time_ago( _new['stamp'] );
+				_new.stamp = time_ago( _new.stamp );
+				if( _new.data.message )
+					_new.data.message = parse_message( _new.data.message );
 				_new['is_' + _new.type] = true;
 				log_out.push( _new );
 			}
@@ -168,5 +177,17 @@ module.exports = function(robot) {
 		if(difference != 1) { periods[j] += "s"; }
 		return difference + " " + periods[j] + " ago";
 	};
+
+	function parse_message( message ) {
+		var regex = /(\b(https?|ftp|file):\/\/[-A-Z0-9+&@#\/%?=~_|!:,.;]*[-A-Z0-9+&@#\/%=~_|])/ig,
+			matches = message.match( regex ),
+			images = '';
+		for( var i in matches ) {
+			if( matches[i].match( /\.(jpe?g|gif|png)$/i ) )
+				images += "<a href=\"" + matches[i] + "\" target=\"_blank\"><img src=\"" + matches[i] + "\"></a>";
+		}
+		if( images ) images = "<div class=\"images\">" + images + "</div>";
+		return message.replace( regex, "<a href=\"$1\">$1</a>" ) + images;
+	}
 
 }
