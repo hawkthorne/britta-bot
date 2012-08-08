@@ -179,7 +179,7 @@ module.exports = function(robot) {
 	};
 
 	function parse_message( message ) {
-		var regex = /(\b(https?|ftp|file):\/\/[-A-Z0-9+&@#\/%?=~_|!:,.;]*[-A-Z0-9+&@#\/%=~_|])/ig,
+		var regex = /(\b(https?|ftp|file):\/\/[-A-Z0-9+&@\$#\/%?=~_|!:,.;]*[-A-Z0-9+&@\$#\/%=~_|])/ig,
 			matches = message.match( regex ),
 			images = '';
 		for( var i in matches ) {
