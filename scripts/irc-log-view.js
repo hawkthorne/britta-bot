@@ -20,47 +20,110 @@
 var hogan = require( 'hogan.js' );
 
 // compile template
-var _start = '\
-<!DOCTYPE html>\
-<html>\
-<head>\
-	<meta http-equiv="Content-type" content="text/html; charset=utf-8">\
-	<title>{{title}} Logs</title>\
-</head>\
+var _start = '\n\
+<!DOCTYPE html>\n\
+<html>\n\
+<head>\n\
+	<meta http-equiv="Content-type" content="text/html; charset=utf-8">\n\
+	<title>{{title}} Logs</title>\n\
+	<style type=\"text/css\">\n\
+		body {\n\
+			background: #d3d6d9;\n\
+			color: #636c75;\n\
+			text-shadow: 0 1px 1px rgba(255, 255, 255, .5);\n\
+			font-family: Helvetica, Arial, sans-serif;\n\
+			margin-top: 70px;\n\
+		}\n\
+		h1 {\n\
+			margin: 8px 0;\n\
+			padding: 0;\n\
+		}\n\
+		li {\n\
+			font-size: 13px;\n\
+			color: #999;\n\
+			list-style-type: none;\n\
+			list-style-position: outside;\n\
+			padding-bottom: 4px;\n\
+		}\n\
+		li.message {\n\
+			font-size: 14px;\n\
+			color: #000;\n\
+		}\n\
+		span.stamp {\n\
+			width: 100px;\n\
+			padding-right: 10px;\n\
+			text-align: right;\n\
+			display: inline-block;\n\
+			font-size: 13px;\n\
+			color: #999;\n\
+		}\n\
+		span.user {\n\
+			font-weight: bold;\n\
+		}\n\
+		p {\n\
+			border-bottom: 1px solid #eee;\n\
+			margin: 6px 0 0 0;\n\
+			padding-bottom: 5px;\n\
+		}\n\
+		p:last-child {\n\
+			border: 0;\n\
+		}\n\
+		div.header {\n\
+			position: fixed;\n\
+			background-color: inherit;\n\
+			width: 100%;\n\
+			box-shadow: 0px 0px 15px #555;\n\
+			top: 0;\n\
+			left: 0;\n\
+			padding: 18px 70px;\n\
+		}\n\
+	</style>\n\
+	<script type="text/javascript">\n\
+		function load() { window.scrollTo(0, document.body.scrollHeight); };\n\
+		window.onload = load;\n\
+	</script>\n\
+</head>\n\
 <body>';
 
-var _channels = '\
-	<ul>\
-	{{#channels}}\
-		<li><a href="{{href}}">{{name}}</a></li>\
-	{{/channels}}\
+var _channels = '\n\
+	<ul>\n\
+	{{#channels}}\n\
+		<li><a href="{{href}}">{{name}}</a></li>\n\
+	{{/channels}}\n\
 	</ul>';
 
-var _logs = '\
-	{{#logs}}\
-		{{stamp}} - \
-		{{#is_kick}}\
-			{{data.user}} was kicked by {{data.by}}{{#data.reason}} ( {{data.reason}} ){{/data.reason}}<br>\
-		{{/is_kick}}\
-		{{#is_nick}}\
-			{{data.from}} changed name to {{data.to}}<br>\
-		{{/is_nick}}\
-		{{#is_join}}\
-			{{data.user}} joined<br>\
-		{{/is_join}}\
-		{{#is_part}}\
-			{{data.user}} left{{#data.reason}} ( {{data.reason}} ){{/data.reason}}<br>\
-		{{/is_part}}\
-		{{#is_quit}}\
-			{{data.user}} quit{{#data.reason}} ( {{data.reason}} ){{/data.reason}}<br>\
-		{{/is_quit}}\
-		{{#is_message}}\
-			{{data.user}}: {{data.message}}<br>\
-		{{/is_message}}\
-	{{/logs}}';
+var _logs = '\n\
+	<div class="header">\n\
+		{{title}} Logs\n\
+	</div>\n\
+	<ul>\n\
+	{{#logs}}\n\
+		<li class="{{type}}">\n\
+		<span class="stamp">{{stamp}}</span>\n\
+		{{#is_kick}}\n\
+			<span class="user">{{data.user}}</span> was kicked by <span class="user">{{data.by}}</span>{{#data.reason}} ( {{data.reason}} ){{/data.reason}}<br>\n\
+		{{/is_kick}}\n\
+		{{#is_nick}}\n\
+			<span class="user">{{data.from}}</span> changed name to <span class="user">{{data.to}}</span><br>\n\
+		{{/is_nick}}\n\
+		{{#is_join}}\n\
+			<span class="user">{{data.user}}</span> joined<br>\n\
+		{{/is_join}}\n\
+		{{#is_part}}\n\
+			<span class="user">{{data.user}}</span> left{{#data.reason}} ( {{data.reason}} ){{/data.reason}}<br>\n\
+		{{/is_part}}\n\
+		{{#is_quit}}\n\
+			<span class="user">{{data.user}}</span> quit{{#data.reason}} ( {{data.reason}} ){{/data.reason}}<br>\n\
+		{{/is_quit}}\n\
+		{{#is_message}}\n\
+			<span class="user">{{data.user}}</span>: {{data.message}}<br>\n\
+		{{/is_message}}\n\
+		</li>\n\
+	{{/logs}}\n\
+	</ul>';
 
-var _end = '\
-</body>\
+var _end = '\n\
+	</body>\n\
 </html>';
 
 var log_tmpl = hogan.compile( _start + _logs + _end ),
@@ -84,11 +147,26 @@ module.exports = function(robot) {
 			var log_out = [];
 			for( var i = logs.length - 1; i >= 0; i-- ) {
 				var _new = JSON.parse( logs[i] );
+				_new['stamp'] = time_ago( _new['stamp'] );
 				_new['is_' + _new.type] = true;
 				log_out.push( _new );
 			}
 			res.end( log_tmpl.render( { title: channel, logs: log_out } ) );
 		});
 	});
+
+	function time_ago( time ) {
+		var periods = [ "sec", "min", "hr", "day", "week", "month", "year", "decade" ],
+			lengths = [ 60, 60, 24, 7, 4.35, 12, 10 ],
+			difference = Math.floor( (new Date).getTime() / 1000 ) - Math.floor( time );
+
+		for(var j = 0; difference >= lengths[j] && j < lengths.length-1; j++) {
+			difference /= lengths[j];
+		}
+
+		difference = Math.round(difference);
+		if(difference != 1) { periods[j] += "s"; }
+		return difference + " " + periods[j] + " ago";
+	};
 
 }

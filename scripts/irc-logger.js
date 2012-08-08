@@ -15,7 +15,7 @@
 
 module.exports = function(robot) {
 
-	var client = robot.redisclient;
+	var queue = [];
 
 	// listen for all events that the irc bot emits
 	robot.adapter.bot
@@ -56,14 +56,15 @@ module.exports = function(robot) {
 			case 'selfMessage':
 				// to, text
 				if( args[0].indexOf('#') == 0 ) {
-					write_log(
-						args[0],
-						'message',
-						{
-							from: robot.name,
+					// delay logging selfMessage, since they are buffered on irc
+					queue.push({
+						room: args[0],
+						type: 'message',
+						data: {
+							user: robot.name,
 							message: args[1]
 						}
-					);
+					});
 				}
 				break;
 			case 'error':
@@ -126,15 +127,24 @@ module.exports = function(robot) {
 		}
 	}
 
+	setInterval(
+		function() {
+			var log;
+			if( log = queue.shift() )
+				write_log( log.room, log.type, log.data );
+		},
+		1000
+	);
+
 	function write_log( room, type, data ) {
 		room = room.trim();
 		console.log(type + ': pushing', data, 'to logs_' + room);
-		client.lpush( 'logs_' + room, JSON.stringify( {
+		robot.redisclient.lpush( 'logs_' + room, JSON.stringify( {
 			type: type,
 			stamp: Math.floor((new Date()).getTime() / 1000),
 			data: data
 		} ) );
-		client.ltrim( 'logs_' + room, 0, 1000 );
+		robot.redisclient.ltrim( 'logs_' + room, 0, 1000 );
 	}
 //	process.hubot = robot;
 }
