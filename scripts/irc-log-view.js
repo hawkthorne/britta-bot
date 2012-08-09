@@ -27,6 +27,49 @@ var _start = '\n\
 	<meta http-equiv="Content-type" content="text/html; charset=utf-8">\n\
 	<title>{{title}} Logs</title>\n\
 	<style type=\"text/css\">\n\
+		html, body, div, span, applet, object, iframe,\n\
+		h1, h2, h3, h4, h5, h6, p, blockquote, pre,\n\
+		a, abbr, acronym, address, big, cite, code,\n\
+		del, dfn, em, img, ins, kbd, q, s, samp,\n\
+		small, strike, strong, sub, sup, tt, var,\n\
+		b, u, i, center,\n\
+		dl, dt, dd, ol, ul, li,\n\
+		fieldset, form, label, legend,\n\
+		table, caption, tbody, tfoot, thead, tr, th, td,\n\
+		article, aside, canvas, details, embed, \n\
+		figure, figcaption, footer, header, hgroup, \n\
+		menu, nav, output, ruby, section, summary,\n\
+		time, mark, audio, video {\n\
+			margin: 0;\n\
+			padding: 0;\n\
+			border: 0;\n\
+			font-size: 100%;\n\
+			font: inherit;\n\
+			vertical-align: baseline;\n\
+		}\n\
+		/* HTML5 display-role reset for older browsers */\n\
+		article, aside, details, figcaption, figure, \n\
+		footer, header, hgroup, menu, nav, section {\n\
+			display: block;\n\
+		}\n\
+		body {\n\
+			line-height: 1;\n\
+		}\n\
+		ol, ul {\n\
+			list-style: none;\n\
+		}\n\
+		blockquote, q {\n\
+			quotes: none;\n\
+		}\n\
+		blockquote:before, blockquote:after,\n\
+		q:before, q:after {\n\
+			content: \'\';\n\
+			content: none;\n\
+		}\n\
+		table {\n\
+			border-collapse: collapse;\n\
+			border-spacing: 0;\n\
+		}\n\
 		body {\n\
 			background: #d3d6d9;\n\
 			color: #636c75;\n\
@@ -43,7 +86,7 @@ var _start = '\n\
 			color: #999;\n\
 			list-style-type: none;\n\
 			list-style-position: outside;\n\
-			padding-bottom: 4px;\n\
+			margin-left: 140px;\n\
 		}\n\
 		li.message {\n\
 			font-size: 14px;\n\
@@ -56,6 +99,7 @@ var _start = '\n\
 			display: inline-block;\n\
 			font-size: 13px;\n\
 			color: #999;\n\
+			margin-left: -140px;\n\
 		}\n\
 		span.user {\n\
 			font-weight: bold;\n\
@@ -77,12 +121,19 @@ var _start = '\n\
 			left: 0;\n\
 			padding: 18px 70px;\n\
 		}\n\
-		.images {\n\
-			margin-left: 105px;\n\
-		}\n\
 		.images img {\n\
 			height: 150px;\n\
 			padding: 10px;\n\
+		}\n\
+		ul {\n\
+			line-height: 18px;\n\
+		}\n\
+		.pagination {\n\
+			float: right;\n\
+			margin-right: 100px;\n\
+		}\n\
+		.pagination .current {\n\
+			padding: 0px 12px;\n\
 		}\n\
 	</style>\n\
 	<script type="text/javascript">\n\
@@ -101,6 +152,13 @@ var _channels = '\n\
 
 var _logs = '\n\
 	<div class="header">\n\
+		<div class="pagination">\n\
+			{{#pagination.prev}}<a href="/logs/{{base}}/{{pagination.prev}}">&lt;&lt;</a>{{/pagination.prev}}\n\
+			{{^pagination.prev}}&lt;&lt;{{/pagination.prev}}\n\
+			<span class="current">{{pagination.page}}</span>\n\
+			{{#pagination.next}}<a href="/logs/{{base}}/{{pagination.next}}">&gt;&gt;</a>{{/pagination.next}}\n\
+			{{^pagination.next}}&gt;&gt;{{/pagination.next}}\n\
+		</div>\n\
 		{{title}} Logs\n\
 	</div>\n\
 	<ul>\n\
@@ -147,10 +205,14 @@ module.exports = function(robot) {
 
 	robot.router.get( "/logs/:channel/:page?", function(req, res) {
 		var channel = req.params.channel.replace( /\$/g, '#' ),
-			page = req.params.page || 1,
+			page = req.params.page * 1 || 1,
 			per_page = 100;
+
 		page = page > 1 ? page : 1;
-		robot.redisclient.lrange( 'logs_' + channel, ( ( page - 1 ) * per_page ) , ( page * per_page ), function(err, logs) {
+		var next = page + 1,
+			prev = ( page - 1 > 0 ? page - 1 : false );
+
+		robot.redisclient.lrange( 'logs_' + channel, ( ( page - 1 ) * per_page ) , ( page * per_page ) - 1 , function(err, logs) {
 			var log_out = [];
 			for( var i = logs.length - 1; i >= 0; i-- ) {
 				var _new = JSON.parse( logs[i] );
@@ -160,7 +222,8 @@ module.exports = function(robot) {
 				_new['is_' + _new.type] = true;
 				log_out.push( _new );
 			}
-			res.end( log_tmpl.render( { title: channel, logs: log_out } ) );
+			if( log_out.length != per_page ) next = false;
+			res.end( log_tmpl.render( { base: req.params.channel, pagination: { page: page, next: next, prev: prev }, title: channel, logs: log_out } ) );
 		});
 	});
 
