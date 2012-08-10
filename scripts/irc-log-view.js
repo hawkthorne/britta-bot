@@ -154,7 +154,7 @@ var _start = '\n\
 			-ms-filter:"progid:DXImageTransform.Microsoft.dropshadow(OffX=2px, OffY=2px, Color=\'#333\')";\n\
 		}\n\
 		.link .thumb img {\n\
-			max-height: 100px;\n\
+			height: 100px;\n\
 			float: left;\n\
 		}\n\
 		.link .title {\n\
