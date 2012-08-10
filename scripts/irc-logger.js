@@ -156,14 +156,15 @@ module.exports = function(robot) {
 					api.oembed(
 						{
 							urls: urls,
-							maxWidth: 450,
+							maxheight: 150,
 							wmode: 'transparent',
 							method: 'after',
 						}
 					).on('complete', function(objs) {
 						// for each object returned:
-						// 		if it has html, append it to the "images" div
-						// 		if it is of type photo, append an image to the "images" div
+						// 		if it is a link, build and append
+						// 		if it has html, append it
+						// 		if it is of type photo, build and append
 						// 		else, do nothing.
 						var images_html = '',
 							unhandled = [];
@@ -182,7 +183,9 @@ module.exports = function(robot) {
 							} else if( objs[i].html ) {
 								images_html += objs[i].html;
 							} else if( objs[i].type && objs[i].type == 'photo' ) {
-								images_html += "<a href=\"" + objs[i].url + "\" target=\"_blank\"><img src=\"" + objs[i].url + "\"></a>"
+								images_html += '<a href="' + objs[i].url + '" target="_blank">\
+													<img src="' + objs[i].url + '">\
+												</a>';
 							} else {
 								unhandled.push( objs[i] );
 							}
@@ -196,8 +199,6 @@ module.exports = function(robot) {
 
 						data.parsed = true;
 						write_log( room, type, data, stamp );
-
-						console.log( objs );
 
 					}).on('error', function(e) {
 						data.embedly_error = e;

@@ -139,9 +139,7 @@ var _start = '\n\
 			background: #fff;\n\
 			width: 700px;\n\
 			padding: 10px;\n\
-			margin-top: 10px;\n\
 			color: #333;\n\
-			margin-bottom: 10px;\n\
 			min-height: 120px;\n\
 			border: 1px solid #999;\n\
 			-webkit-border-radius:5px;\n\
@@ -163,6 +161,10 @@ var _start = '\n\
 			display: block;\n\
 			margin-bottom: 8px;\n\
 			color: #000;\n\
+		}\n\
+		.images {\n\
+			margin-top: 10px;\n\
+			margin-bottom: 10px;\n\
 		}\n\
 	</style>\n\
 	<script type="text/javascript">\n\
