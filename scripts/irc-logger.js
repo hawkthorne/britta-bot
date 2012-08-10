@@ -221,12 +221,15 @@ module.exports = function(robot) {
 	}
 
 	function write_log( room, type, data, stamp ) {
-		robot.redisclient.lpush( 'logs_' + room, JSON.stringify( {
-			type: type,
-			stamp: stamp,
-			data: data
-		} ) );
-		robot.redisclient.ltrim( 'logs_' + room, 0, 1000 );
+		//only write if not a PM to the robot itself.
+		if( room != robot.name ) {
+			robot.redisclient.lpush( 'logs_' + room, JSON.stringify( {
+				type: type,
+				stamp: stamp,
+				data: data
+			} ) );
+			robot.redisclient.ltrim( 'logs_' + room, 0, 1000 );
+		}
 	}
 
 	function parse_message( message, matches_only ) {

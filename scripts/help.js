@@ -68,7 +68,9 @@ module.exports = function(robot) {
 		if( res.match[1] ) { // send it to the room
 			res.send( emit );
 		} else { // send a private message to avoid annoying the shit out of everyone
-			res.send( res.message.user.name + ': Check your PM' );
+			if( res.message.user.room != null ) {
+				res.send( res.message.user.name + ': Check your PM' );
+			}
 			robot.send( res.message.user.name, emit );
 		}
 

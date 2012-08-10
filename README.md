@@ -2,6 +2,10 @@
 
 Britta bot is an instance of Github's hubot for the #Hawkthorne channel on irc.freenode.net
 
+## Logs
+
+Logs can be found at http://britta-bot.herokuapp.com/logs, featuring [embed.ly](http://embed.ly)
+
 ## Usage
 
 All commands to britta-bot can be prefixed with ':'
