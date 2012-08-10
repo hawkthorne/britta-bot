@@ -32,7 +32,7 @@ module.exports = function(robot) {
 		switch( type ) {
 			case 'kick':
 				// channel, who, by, reason
-				write_log(
+				prepare_log(
 					args[0],
 					type,
 					{
@@ -44,7 +44,7 @@ module.exports = function(robot) {
 				break;
 			case 'message':
 				// from, channel, text
-				write_log(
+				prepare_log(
 					args[1],
 					type,
 					{
@@ -69,7 +69,7 @@ module.exports = function(robot) {
 				break;
 			case 'error':
 				// message
-				write_log(
+				prepare_log(
 					'errors',
 					type,
 					{
@@ -79,7 +79,7 @@ module.exports = function(robot) {
 				break;
 			case 'join':
 				// channel, who
-				write_log(
+				prepare_log(
 					args[0],
 					type,
 					{
@@ -89,7 +89,7 @@ module.exports = function(robot) {
 				break;
 			case 'part':
 				// channel, who, reason
-				write_log(
+				prepare_log(
 					args[0],
 					type,
 					{
@@ -101,7 +101,7 @@ module.exports = function(robot) {
 			case 'quit':
 				// who, reason, channels
 				for( var i in args[2] ) {
-					write_log(
+					prepare_log(
 						args[2][i],
 						type,
 						{
@@ -114,7 +114,7 @@ module.exports = function(robot) {
 			case 'nick':
 				// old nick, new nick, channels
 				for( var i in args[2] ) {
-					write_log(
+					prepare_log(
 						args[2][i],
 						type,
 						{
@@ -131,20 +131,118 @@ module.exports = function(robot) {
 		function() {
 			var log;
 			if( log = queue.shift() )
-				write_log( log.room, log.type, log.data );
+				prepare_log( log.room, log.type, log.data );
 		},
 		1000
 	);
 
-	function write_log( room, type, data ) {
+	function prepare_log( room, type, data ) {
+		var stamp = Math.floor((new Date()).getTime() / 1000);
 		room = room.trim();
-		console.log(type + ': pushing', data, 'to logs_' + room);
+		if( data.message ) {
+			if( process.env.EMBEDLY_KEY ) {
+				var embedly = require('embedly'),
+					Api = embedly.Api,
+					api = new Api({user_agent: 'Mozilla/5.0 (compatible; myapp/1.0; u@my.com)', key: process.env.EMBEDLY_KEY});
+
+				// get the urls from the message
+				urls = parse_message( data.message, true )
+				for( var i in urls )
+					data.message = data.message.replace( urls[i], '<a href="' + urls[i] + '">' + urls[i] + '</a>' );
+
+				// we have urls in the message
+				if( urls && urls.length > 0 ) {
+					// send an api request to embedly, on return write to log
+					api.oembed(
+						{
+							urls: urls,
+							maxWidth: 450,
+							wmode: 'transparent',
+							method: 'after',
+						}
+					).on('complete', function(objs) {
+						// for each object returned:
+						// 		if it has html, append it to the "images" div
+						// 		if it is of type photo, append an image to the "images" div
+						// 		else, do nothing.
+						var images_html = '',
+							unhandled = [];
+
+						for( var i in objs ) {
+							if( objs[i].type == 'link' ) {
+								images_html += '<div class="link">\
+													<a href="' + objs[i].url + '" class="thumb">\
+														<img src="' + objs[i].thumbnail_url + '">\
+													</a>\
+													<a href="' + objs[i].url + '" class="title">\
+														' + objs[i].title + '\
+													</a>\
+													' + objs[i].description + '\
+												</div>';
+							} else if( objs[i].html ) {
+								images_html += objs[i].html;
+							} else if( objs[i].type && objs[i].type == 'photo' ) {
+								images_html += "<a href=\"" + objs[i].url + "\" target=\"_blank\"><img src=\"" + objs[i].url + "\"></a>"
+							} else {
+								unhandled.push( objs[i] );
+							}
+						}
+
+						if( images_html != '' )
+							data.message += "<div class=\"images\">" + images_html + "</div>";
+
+						if( unhandled.length > 0 )
+							data.embedly_unhandled = unhandled;
+
+						data.parsed = true;
+						write_log( room, type, data, stamp );
+
+						console.log( objs );
+
+					}).on('error', function(e) {
+						data.embedly_error = e;
+						data.parsed = true;
+						write_log( room, type, data, stamp );
+					}).start()
+				} else {
+					write_log( room, type, data, stamp );
+				}
+			} else {
+				// no embedly support, just simple parse and write
+				data.message = parse_message( data.message );
+				data.parsed = true;
+				write_log( room, type, data, stamp );
+			}
+		} else {
+			// no message to parse anyways
+			write_log( room, type, data, stamp );
+		}
+	}
+
+	function write_log( room, type, data, stamp ) {
 		robot.redisclient.lpush( 'logs_' + room, JSON.stringify( {
 			type: type,
-			stamp: Math.floor((new Date()).getTime() / 1000),
+			stamp: stamp,
 			data: data
 		} ) );
 		robot.redisclient.ltrim( 'logs_' + room, 0, 1000 );
 	}
-//	process.hubot = robot;
+
+	function parse_message( message, matches_only ) {
+		matches_only = matches_only || false;
+		var regex = /(\b(https?|ftp|file):\/\/[-A-Z0-9+&@\$#\*\/%?=~_|!:,.;]*[-A-Z0-9+&@\$#\/%=~_|])/ig,
+			matches = message.match( regex ),
+			images = '';
+		if( matches_only ) {
+			return matches;
+		} else {
+			for( var i in matches ) {
+				if( matches[i].match( /\.(jpe?g|gif|png)$/i ) )
+					images += "<a href=\"" + matches[i] + "\" target=\"_blank\"><img src=\"" + matches[i] + "\"></a>";
+			}
+			if( images ) images = "<div class=\"images\">" + images + "</div>";
+			return message.replace( regex, "<a href=\"$1\">$1</a>" ) + images;
+		}
+	}
+
 }

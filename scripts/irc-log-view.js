@@ -135,6 +135,35 @@ var _start = '\n\
 		.pagination .current {\n\
 			padding: 0px 12px;\n\
 		}\n\
+		.link {\n\
+			background: #fff;\n\
+			width: 700px;\n\
+			padding: 10px;\n\
+			margin-top: 10px;\n\
+			color: #333;\n\
+			margin-bottom: 10px;\n\
+			min-height: 120px;\n\
+			border: 1px solid #999;\n\
+			-webkit-border-radius:5px;\n\
+			-moz-border-radius:5px;\n\
+			border-radius:5px;\n\
+			-webkit-box-shadow:2px 2px 7px -2px #333;\n\
+			-moz-box-shadow:2px 2px 7px -2px #333;\n\
+			box-shadow:2px 2px 7px -2px #333;\n\
+			filter: progid:DXImageTransform.Microsoft.dropshadow(OffX=2px, OffY=2px, Color=\'#333\');\n\
+			-ms-filter:"progid:DXImageTransform.Microsoft.dropshadow(OffX=2px, OffY=2px, Color=\'#333\')";\n\
+		}\n\
+		.link .thumb img {\n\
+			max-height: 100px;\n\
+			float: left;\n\
+		}\n\
+		.link .title {\n\
+			font-size: 16px;\n\
+			text-decoration: none;\n\
+			display: block;\n\
+			margin-bottom: 8px;\n\
+			color: #000;\n\
+		}\n\
 	</style>\n\
 	<script type="text/javascript">\n\
 		function load() { window.scrollTo(0, document.body.scrollHeight); };\n\
@@ -227,7 +256,7 @@ module.exports = function(robot) {
 			for( var i = logs.length - 1; i >= 0; i-- ) {
 				var _new = JSON.parse( logs[i] );
 				_new.stamp = time_ago( _new.stamp );
-				if( _new.data.message )
+				if( _new.data.message && !_new.data.parsed )
 					_new.data.message = parse_message( _new.data.message );
 				_new['is_' + _new.type] = true;
 				log_out.push( _new );
@@ -252,7 +281,7 @@ module.exports = function(robot) {
 	};
 
 	function parse_message( message ) {
-		var regex = /(\b(https?|ftp|file):\/\/[-A-Z0-9+&@\$#\/%?=~_|!:,.;]*[-A-Z0-9+&@\$#\/%=~_|])/ig,
+		var regex = /(\b(https?|ftp|file):\/\/[-A-Z0-9+&@\$#\*\/%?=~_|!:,.;]*[-A-Z0-9+&@\$#\/%=~_|])/ig,
 			matches = message.match( regex ),
 			images = '';
 		for( var i in matches ) {
