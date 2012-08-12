@@ -97,7 +97,7 @@ var insults = [
 	"{name}, You're a fun vampire. You don't suck blood, you just suck.",
 	"{name} is just a mess. It's like God spilled a person.",
 	"For my turn, I feel sorry for {name}.",
-	"In about 13 turns, {name} will die of exposure. I wait 14 turns."
+	"In about 13 turns, {name} will die of exposure. I wait 14 turns.",
 	"Hey {name}, Enjoy eating fiber and watching The Mentalist.",
 	"{name}, You are human tennis elbow!",
 	"{name}, going home alone? GAY!",
@@ -124,7 +124,7 @@ var insults = [
 	"{name}, I've always thought you were a joke and this isn't disproving the theory.",
 	"{name}, If a mechanical spider was tearing you to pieces, Tom Selleck would just stand there and watch you die.",
 	"{name}, You're no more of a song writer than Billy Joel.",
-	"{name} is a GDB."
+	"{name} is a GDB.",
 	"{name}, Go tongue Chang.",
 	"{name}, I thought you were like Bill Murray in any of his films, but you're more like Michael Douglas in any of his films.",
 	"{name}, I hope you transfer to hell.",
