@@ -228,7 +228,7 @@ module.exports = function(robot) {
 				stamp: stamp,
 				data: data
 			} ) );
-			robot.redisclient.ltrim( 'logs_' + room, 0, 1000 );
+			robot.redisclient.ltrim( 'logs_' + room, 0, 100000 );
 		}
 	}
 
