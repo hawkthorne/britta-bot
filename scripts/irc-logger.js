@@ -223,6 +223,7 @@ module.exports = function(robot) {
 	function write_log( room, type, data, stamp ) {
 		//only write if not a PM to the robot itself.
 		if( room != robot.name ) {
+			room = room.toLowerCase();
 			robot.redisclient.lpush( 'logs_' + room, JSON.stringify( {
 				type: type,
 				stamp: stamp,
