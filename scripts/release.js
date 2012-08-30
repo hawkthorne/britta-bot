@@ -23,9 +23,11 @@ module.exports = function(robot) {
     robot
       .http("http://www.reddit.com/user/britta-bot/submitted.json")
       .get()(function( err, _, body ) {
-        if( !err ) {
-          var posts = JSON.parse(body);
+        var posts = JSON.parse(body);
+        if( !err && posts.data && posts.data.children[0].data.url ) {
           last_release_url = posts.data.children[0].data.url
+        } else {
+          console.log( body )
         }
         res.writeHead(302, {
           'Location': last_release_url
