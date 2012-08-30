@@ -15,15 +15,20 @@
 //Author:
 //  jhoff
 
+var last_release_url = 'http://www.reddit.com/r/hawkthorne';
+
 module.exports = function(robot) {
 
   robot.router.get("/last-release", function(req, res) {
     robot
       .http("http://www.reddit.com/user/britta-bot/submitted.json")
-      .get()(function( _, _, body ) {
-        var posts = JSON.parse(body);
+      .get()(function( err, res, body ) {
+        if( !err ) {
+          var posts = JSON.parse(body);
+          last_release_url = posts.data.children[0].data.url
+        }
         res.writeHead(302, {
-          'Location': posts.data.children[0].data.url
+          'Location': last_release_url
         });
         res.end('See-ya');
       });
