@@ -22,7 +22,7 @@ module.exports = function(robot) {
   robot.router.get("/last-release", function(req, res) {
     robot
       .http("http://www.reddit.com/user/britta-bot/submitted.json")
-      .get()(function( err, res, body ) {
+      .get()(function( err, _, body ) {
         if( !err ) {
           var posts = JSON.parse(body);
           last_release_url = posts.data.children[0].data.url
