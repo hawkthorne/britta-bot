@@ -12,6 +12,7 @@ All commands to britta-bot can be prefixed with ':'
 
 	:<user> is a badass guitarist - assign a role to a user
 	:<user> is not a badass guitarist - remove a role from a user
+	:<user> time is <hh:mm am/pm>
 	:abed bomb N - get N abeds all in a row ( limit 8 )
 	:abed me - Receive an abed
 	:animate me <query> - The same thing as `image me`, except adds a few parameters to try to return an animated GIF instead.
@@ -45,5 +46,6 @@ All commands to britta-bot can be prefixed with ':'
 	:troy bomb N - troy xN ( limit 8 )
 	:troy me - Receive a troy
 	:updates - britta-bot will send you a pm of the most recent release notes
+	:when is <user> - see what time it currently is for <user>
 	:who is <user> - see what roles a user has
 	:youtube me <query> - Searches YouTube for the query and returns the video embed link.
