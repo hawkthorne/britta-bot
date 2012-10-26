@@ -26,7 +26,8 @@
     "redis": "0.7.x",
     "url": "0.7.x",
 	"hogan.js": "2.x.x",
-	"embedly" : "0.6.x"
+	"embedly" : "0.6.x",
+    "gm" : "1.5.x"
   },
 
   "engines": {
