@@ -1,4 +1,5 @@
-var gm = require('gm').subClass({ imageMagick: true });
+var gm = require('gm').subClass({ imageMagick: true }),
+    url = require('url');
 
 module.exports = function(robot) {
 
@@ -7,14 +8,15 @@ module.exports = function(robot) {
 	robot.adapter.bot.on( 'names', function(chan, names) { usercount[chan] = Object.size(names); } );
 
     setInterval( function() {
-        // every 120 seconds, ask for the NAMES of a random channel
+        // every 5 minutes, ask for the NAMES of a random channel
         var chans = robot.adapter.bot.opt.channels,
             r = Math.floor( Math.random() * Object.size(chans) );
         robot.adapter.bot.send('NAMES', robot.adapter.bot.opt.channels[r]);
-    }, 30000);
+    }, 300000);
 
-    robot.router.get( "/status.png\?channel=:channel", function(req, res) {
-        var channel = req.params.channel.replace( /\$/g, '#' );
+    robot.router.get( "/status.png", function(req, res) {
+        var parsed = url.parse( req.url, true ),
+            channel = parsed.query.channel.replace( /\$/g, '#' );
         gm(25, 20, "#ffffff")
             .fontSize(13)
             .fill("#000")
