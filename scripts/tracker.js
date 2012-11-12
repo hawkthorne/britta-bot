@@ -5,7 +5,7 @@ var mixpanel = Mixpanel.init(process.env.MIXPANEL || '');
 function getClientIp(req) {
   var ipAddress;
   // Amazon EC2 / Heroku workaround to get real client IP
-  var forwardedIpsStr = req.header('x-forwarded-for'); 
+  var forwardedIpsStr = req.headers['x-forwarded-for']; 
   if (forwardedIpsStr) {
     // 'x-forwarded-for' header may return multiple IP addresses in
     // the format: "client IP, proxy 1 IP, proxy 2 IP" so take the
