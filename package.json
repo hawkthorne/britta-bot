@@ -27,7 +27,8 @@
     "url": "0.7.x",
 	"hogan.js": "2.x.x",
 	"embedly" : "0.6.x",
-    "gm" : "1.5.x"
+    "gm" : "1.5.x",
+    "mixpanel" : "0.0.x"
   },
 
   "engines": {
