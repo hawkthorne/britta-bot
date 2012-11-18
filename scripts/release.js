@@ -27,6 +27,8 @@ module.exports = function(robot) {
         if( !err && posts.data && posts.data.children[0].data.url ) {
           last_release_url = posts.data.children[0].data.url
         } else {
+          console.log( 'http://www.reddit.com/user/britta-bot/submitted.json failed to fetch!')
+          console.log( err )
           console.log( body )
         }
         res.writeHead(302, {
