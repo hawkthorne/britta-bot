@@ -24,17 +24,23 @@ module.exports = function(robot) {
       .http("http://www.reddit.com/user/britta-bot/submitted.json")
       .get()(function( err, _, body ) {
         var posts = JSON.parse(body);
-        if( !err && posts.data && posts.data.children[0].data.url ) {
-          last_release_url = posts.data.children[0].data.url
-        } else {
+        if( !err || posts.data === undefined) {
           console.log( 'http://www.reddit.com/user/britta-bot/submitted.json failed to fetch!')
           console.log( err )
           console.log( body )
+          return;
         }
-        res.writeHead(302, {
-          'Location': last_release_url
-        });
-        res.end('See-ya');
+        
+        for (var i = 0; i < posts.data.children.length; i++) {
+          var story = posts.data.children[i].data;
+          if (story.subreddit == "hawkthorne") {
+            res.writeHead(302, {
+              'Location': story.url
+            });
+            res.end('See-ya');
+            return;
+          }
+        }
       });
   });
 
