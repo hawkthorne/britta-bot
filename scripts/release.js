@@ -24,11 +24,14 @@ module.exports = function(robot) {
       .http("http://www.reddit.com/user/britta-bot/submitted.json")
       .get()(function( err, _, body ) {
         var posts = JSON.parse(body);
-        if( !err || posts.data === undefined) {
+        if( err || posts.data === undefined) {
           console.log( 'http://www.reddit.com/user/britta-bot/submitted.json failed to fetch!')
           console.log( err )
           console.log( body )
-          return;
+
+          res.writeHead(500);
+          res.end('http://www.reddit.com/user/britta-bot/submitted.json failed to fetch!');
+          return
         }
         
         for (var i = 0; i < posts.data.children.length; i++) {
@@ -41,6 +44,9 @@ module.exports = function(robot) {
             return;
           }
         }
+
+        res.writeHead(404);
+        res.end("No post can be found");
       });
   });
 
